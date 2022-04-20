@@ -1,0 +1,20 @@
+{
+  "name": "frightening-lip-jog-q9l56",
+  "productName": "frightening-lip-jog-q9l56",
+  "description": "My Electron application description",
+  "keywords": [],
+  "main": "./main.js",
+  "version": "1.0.0",
+  "author": "user",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "serialport": "^10.3.0",
+    "tableify": "^1.1.1",
+    "jquery": "*"
+  },
+  "devDependencies": {
+    "electron": "17.0.0"
+  }
+}

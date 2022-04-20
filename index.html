@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World!!</title>
+    <style>
+        table { border-collapse: collapse; }
+        table, th, td { border: 1px solid black; }
+    </style>
+    <link rel="stylesheet" href="uikit.min.css" />
+    <script src="uikit.min.js"></script>
+    <script src="uikit-icons.min.js"></script>
+</head>
+
+<body class="uk-padding">
+  
+    <h1>Hello World!</h1>
+
+    We are using Node.js <span id="node-version"></span>, Chromium <span id="chrome-version"></span>, Electron <span id="electron-version"></span>, and Serialport <span id="serialport-version"></span>
+
+    <div id="error"></div>
+    <div id="ports"></div>
+
+<input type="text" id="message">
+<button onclick="var msg = document.getElementById('message').value;serialWrite('-msg '+ msg);">Gönder</button>
+<br/>
+<button onclick="serialWrite('-color 00FF00');">Renk</button>
+<form class="uk-form-stacked">
+
+    <div class="uk-margin">
+        <label class="uk-form-label" for="form-stacked-text">Text</label>
+        <div class="uk-form-controls">
+            <input class="uk-input" id="form-stacked-text" type="text" placeholder="Some text...">
+        </div>
+    </div>
+
+    <div class="uk-margin">
+        <label class="uk-form-label" for="form-stacked-select">Select</label>
+        <div class="uk-form-controls">
+            <select class="uk-select" id="form-stacked-select">
+                <option>Option 01</option>
+                <option>Option 02</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="uk-margin">
+        <div class="uk-form-label">Inverse</div>
+        <div class="uk-form-controls">
+            <label><input class="uk-radio" type="radio" name="radio1"> Yes</label><br>
+            <label><input class="uk-radio" type="radio" name="radio1"> No</label>
+        </div>
+    </div>
+
+    <div class="uk-margin">
+        <div class="uk-form-label">Delay</div>
+        <div class="uk-form-controls">
+            <input class="uk-range" type="range" value="2" min="0" max="10" step="0.1">
+        </div>
+    </div>
+
+    <div class="uk-margin">
+        <div class="uk-form-label">Brightness</div>
+        <div class="uk-form-controls">
+            <input class="uk-range" type="range" value="2" min="0" max="255" step="1">
+        </div>
+    </div>
+
+    <div class="uk-margin">
+        <div class="uk-form-label">Color</div>
+        <div class="uk-form-controls">
+            <input class="uk-range color" type="edit" >
+        </div>
+    </div>
+
+</form>
+
+    <script>
+  delete window.module;
+</script>
+
+<script>
+    window.$ = window.jQuery = require('jquery')
+    window.myColorPicker = require("./colorPicker")
+</script>
+<script src="colorPicker.js"></script>
+<script src="./renderer.js"></script>
+<script type="text/javascript">
+    window.$('.color').colorPicker(/* optinal options */); // that's it
+</script>
+</body>
+</html>
