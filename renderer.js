@@ -35,10 +35,29 @@ setTimeout(listPorts, 2000);
 
 listSerialPorts()
 
+var portList = SerialPort.list();
+
+portList.then((r) => {
+console.log ("list 1", r);
+})
+
+console.log ("list", portList);
+
 // Create a port
 const port = new SerialPort({
   path: '/dev/tty.wchusbserial1450',
-  baudRate: 9600
+  baudRate: 9600,
+  autoOpen: false,
+})
+
+port.open(function (err) {
+  if (err) {
+    document.getElementById("status").innerHTML = err.message;
+    return console.log('Error opening port: ', err.message)
+  }
+
+  // Because there's no callback to write, write errors will be emitted on the port:
+  port.write('main screen turn on')
 })
 
 port.on('data', data =>{
