@@ -1,9 +1,5 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
-
 const { SerialPort } = require('serialport')
-const tableify = require('tableify')
+const { ReadlineParser } = require('@serialport/parser-readline')
 const jQuery = require('jquery')
 
 function delay(delayInms) {
@@ -18,7 +14,17 @@ var lastReaded = "";
 
 const connectionStatusDom = jQuery('#connectionStatus');
 const connectionButtonDom = jQuery('#connectButton');
+const customizeTabDom = jQuery('#customizeTab');
 const portListDom = jQuery("#portList");
+const messageDom = jQuery('#msg');
+
+messageDom.keydown((e) => {
+  if(['|'].indexOf(e.key) === -1){
+
+  } else {
+    e.preventDefault();
+  }
+});
 
 async function listPorts() {
 
@@ -42,12 +48,18 @@ async function listPorts() {
     portListDom.empty();
 
     for (var i = 0; i < ports.length; i++) {
+      
       var node = jQuery('<li class="uk-text-center" style="cursor: pointer"><div first></div><div second class="uk-text-meta"></div></li>');
-      var r = ports[i];
-      node.click(() => setPort(node, r));
-      node.find('[first]').html(ports[i].path);
-      node.find('[second]').html(ports[i].friendlyName);
-      portListDom.append(node);
+      var port = ports[i];
+      function x(node, port) {
+        node.click(() => setPort(node, port));
+        node.find('[first]').html(port.path);
+        node.find('[second]').html(port.friendlyName);
+        portListDom.append(node);
+      }
+
+      x(node, port);
+
     }
 
   })
@@ -65,11 +77,12 @@ var selectedPort = null;
 var port;
 var deviceCheckOK = false;
 
-async function disconnectPort() {
+async function disconnectPort(showMessage = true) {
   if (port !== undefined && port.isOpen) {
     deviceCheckOK = false;
     port.close();
-    connectionStatusDom.html("Disconnected");
+    customizeTabDom.addClass('uk-disabled');
+    if (showMessage) connectionStatusDom.html("Disconnected");
   }
 }
 
@@ -82,6 +95,7 @@ async function connectPort() {
     if (port !== undefined && port.isOpen) {
       deviceCheckOK = false;
       port.close();
+      customizeTabDom.addClass('uk-disabled');
       await delay(1000);
     }
 
@@ -89,9 +103,10 @@ async function connectPort() {
       path: selectedPort.path,
       baudRate: 9600,
       autoOpen: false,
-      parser: new Readline("\r\n"),
+      //parser: new ReadlineParser('\n'),
     });
 
+    
     port.open(function (err) {
       if (err) {
         connectionStatusDom.html("Connection fail");
@@ -99,48 +114,104 @@ async function connectPort() {
         return;
       }
 
-      console.log(port);
+      const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }))
 
       connectionStatusDom.html("Checking device...");
 
-      port.on('data', data => {
+      var checkDeviceTimeout = setTimeout(function () {
+        connectionStatusDom.html("Device not found");
+        disconnectPort(false);
+      }, 4000);
+
+      
+    
+      parser.on('data', data => {
+
+        var readline = data.toString();
+
         if (deviceCheckOK == false) {
-          if (data.toString().indexOf("Strimer Plus Arduino") > -1) {
+          if (readline.indexOf("Strimer Plus Arduino") > -1) {
             deviceCheckOK = true;
-            connectionStatusDom.html("Done");
+            clearTimeout(checkDeviceTimeout);
+            var splittedCommands = readline.split("|");
+            for (var i=0; i<splittedCommands.length; i++) {
+              var keyValue = splittedCommands[i].split(':');
+              if (keyValue[0] == 'msg') {
+                jQuery('#msg').val(keyValue[1]);
+              } else if (keyValue[0] == 'delay') {
+                jQuery('#delay').val(keyValue[1]);
+              } else if (keyValue[0] == 'bri') {
+                jQuery('#bri').val(keyValue[1]);
+              } else if (keyValue[0] == 'color') {
+                var color = '#'+parseInt(keyValue[1]).toString(16); 
+                jQuery('#color').val(color);
+              } else if (keyValue[0] == 'bgcolor') {
+                var color = '#'+parseInt(keyValue[1]).toString(16); 
+                jQuery('#bgcolor').val(color);
+              } else if (keyValue[0] == 'inv') {
+                if (keyValue[1] == '1') {
+                  jQuery('#inv-1').prop("checked", true);
+                } else {
+                  jQuery('#inv-0').prop("checked", true);
+                }
+                  
+              }
+
+            }
+
+            customizeTabDom.removeClass("uk-disabled");
+            connectionStatusDom.html("Connected");
             UIkit.switcher(jQuery('#tabs').get(0)).show(1);
           }
         }
 
-        console.log ("read", data.toString());
-
-        lastReaded = data.toString();
+        lastReaded = readline;
       });
     });
   }
 }
 
+var dontFlood = false;
+var lastLine = "";
 
-async function serialWrite(line) {
-  if (port !== undefined && port.isOpen) {
 
-    lastReaded = "";
+async function serialWrite(line, checkOK = true) {
 
-    var result = await port.write(line + '\n');
+  lastLine = line;
 
-    await delay(1000);
+  if (dontFlood) return;
 
-    if (!result) {
+  dontFlood = true;
+
+  setTimeout(async function () {
+
+    dontFlood = false;
+
+    if (port !== undefined && port.isOpen) {
+
+      lastReaded = "";
+
+      var result = await port.write(lastLine + '\n');
+
+      await delay(250);
+
+      if (!result) {
+        customizeTabDom.addClass('uk-disabled');
+        connectionStatusDom.html("Please make connect");
+        UIkit.switcher(jQuery('#tabs').get(0)).show(0);
+      } else if (checkOK && lastReaded.indexOf("OK") == -1) {
+        customizeTabDom.addClass('uk-disabled');
+        connectionStatusDom.html("Device not found");
+        UIkit.switcher(jQuery('#tabs').get(0)).show(0);
+      }
+    }
+
+    else {
+      customizeTabDom.addClass('uk-disabled');
       connectionStatusDom.html("Please make connect");
       UIkit.switcher(jQuery('#tabs').get(0)).show(0);
-    } else if (lastReaded.indexOf("OK") == -1) {
-      connectionStatusDom.html("Device not found");
-      UIkit.switcher(jQuery('#tabs').get(0)).show(0);
     }
-  }
+  }, 500)
 
-  else {
-    connectionStatusDom.html("Please make connect");
-    UIkit.switcher(jQuery('#tabs').get(0)).show(0);
-  }
+
 }

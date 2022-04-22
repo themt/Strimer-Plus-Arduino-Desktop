@@ -3,24 +3,18 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Hello World!!</title>
+    <title>Strimer Plus Arduino Desktop</title>
     <style>
-        table {
-            border-collapse: collapse;
-        }
-
-        table,
-        th,
-        td {
-            border: 1px solid black;
-        }
-
         .uk-display-none {
             display: none;
         }
 
         li.uk-active {
-            background-color: 
+            background-color:
+        }
+
+        .uk-disabled {
+            opacity: 0.5;
         }
     </style>
     <link rel="stylesheet" href="uikit.min.css" />
@@ -38,35 +32,37 @@
         <p id="status">Connecting...</p>
     </div>
 
-    <ul id="tabs" class="uk-subnav uk-subnav-pill uk-flex-center" uk-switcher="animation: uk-animation-fade">
+    <ul id="tabs" class="uk-flex-center uk-tab" uk-switcher="animation: uk-animation-fade">
         <li><a href="#">Connection</a></li>
         <li><a href="#">Customize</a></li>
+        <li><a href="#">About</a></li>
     </ul>
 
     <ul class="uk-switcher uk-margin" style="height: calc(100vh - 200px)">
         <li>
             <div class="uk-position-center">
                 <p id="connectionStatus" class="uk-text-center"></p>
-                <ul id="portList" class="uk-list uk-list-divider uk-button-default" style="height: 100px; overflow-y: auto;">
+                <ul id="portList" class="uk-list uk-list-divider uk-button-default"
+                    style="height: 150px; overflow-y: auto;">
                 </ul>
                 <input type="button" class="uk-button uk-button-default" value="Refresh" onclick="listPorts()">
                 <input type="button" class="uk-button uk-button-default" value="Disconnect" onclick="disconnectPort()">
                 <input id="connectButton" type="button" class="uk-button uk-button-primary" value="Connect" onclick="connectPort()">
-                
+
             </div>
         </li>
         <li>
-            <div class="uk-form-stacked" action="#">
+            <div id="customizeTab" class="uk-disabled uk-form-stacked" action="#">
 
                 <div class="uk-margin">
                     <label class="uk-form-label" for="form-stacked-text">Message</label>
                     <div class="uk-form-controls">
                         <div uk-grid>
                             <div class="uk-width-expand">
-                                <input class="uk-input" id="message" type="text" placeholder="Some text...">
+                                <input class="uk-input" id="msg" type="text" placeholder="Some text...">
                 </div>
                             <div class="uk-width-auto">
-                                <input class="uk-button uk-button-default" type="button" value="Change" onclick="serialWrite('-msg ' + document.getElementById('message').value)">
+                                <input class="uk-button uk-button-default" type="button" value="Change" onclick="serialWrite('-msg ' + document.getElementById('msg').value)" pattern="a">
                 </div>
                         </div>
                     </div>
@@ -77,14 +73,14 @@
                         <div class="uk-width-expand">
                             <div class="uk-form-label">Delay</div>
                             <div class="uk-form-controls">
-                                <input class="uk-range" type="range" value="2" min="0" max="255" step="1" onchange="serialWrite('-delay '+ this.value)">
+                                <input id="delay" class="uk-range" type="range" value="2" min="0" max="255" step="1" onchange="serialWrite('-delay '+ this.value)">
                     </div>
                         </div>
 
                         <div class="uk-width-expand">
                             <div class="uk-form-label">Brightness</div>
                             <div class="uk-form-controls">
-                                <input class="uk-range" type="range" value="2" min="0" max="255" step="1" onchange="serialWrite('-bri '+ this.value)">
+                                <input id="bri" class="uk-range" type="range" value="2" min="0" max="255" step="1" onchange="serialWrite('-bri '+ this.value)">
                     </div>
                         </div>
                     </div>
@@ -96,21 +92,21 @@
                         <div class="uk-width-expand">
                             <div class="uk-form-label">Color</div>
                             <div class="uk-form-controls">
-                                <input class="uk-range color" type="color" onchange="serialWrite('-color '+ this.value.substring(1))">
+                                <input id="color" class="uk-range color" type="color" oninput="serialWrite('-color '+ this.value.substring(1))">
                 </div>
                         </div>
                         <div class="uk-width-expand">
                             <div class="uk-form-label">Background Color</div>
                             <div class="uk-form-controls">
-                                <input class="uk-range color" type="color" onchange="serialWrite('-bgcolor '+ this.value.substring(1))">
+                                <input id="bgcolor" class="uk-range color" type="color" oninput="serialWrite('-bgcolor '+ this.value.substring(1))">
                     </div>
                         </div>
 
                         <div class="uk-width-expand">
                             <div class="uk-form-label">Inverse</div>
                             <div class="uk-form-controls">
-                                <label><input class="uk-radio" type="radio" name="inv" onchange="serialWrite('-inv 1')"> Yes</label><br>
-                                <label><input class="uk-radio" type="radio" name="inv" onchange="serialWrite('-inv 0')"> No</label>
+                                <label><input id="inv-1" class="uk-radio" type="radio" name="inv" onchange="serialWrite('-inv 1')"> Yes</label><br>
+                                <label><input id="inv-0" class="uk-radio" type="radio" name="inv" onchange="serialWrite('-inv 0')"> No</label>
                             </div>
                         </div>
                     </div>
@@ -123,15 +119,16 @@
         </div>
             </div>
         </li>
+
+        <li>
+            <div class="uk-position-center">
+                <h1 class="uk-text-center">Strimer Plus Arduino Desktop</h1>
+                <h4 class="uk-text-center">Help you manage Strimer Plus Arduino</h4>
+                <p class="uk-text-center">Desktop 1.0.0 - Device 1.0.0 - 2022 (C) Murat TAMCI aka THEMT</p>
+                <p class="uk-text-center"><a href="https://github.com/themt/Strimer_Plus_Arduino" target="_blank"><span uk-icon="icon: github; ratio: 1"></span> Github</a> for source code, lasted updates, etc</p>
+            </div>
+        </li>
     </ul>
-
-    <script>
-        delete window.module;
-    </script>
-
-    <script>
-        window.$ = window.jQuery = require('jquery')
-    </script>
     <script src="./renderer.js"></script>
 </body>
 

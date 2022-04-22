@@ -1,6 +1,6 @@
 {
-  "name": "Strimer-Plus-Arduino-Desktop",
-  "productName": "Strimer-Plus-Arduino-Desktop",
+  "name": "Strimer Plus Arduino Desktop",
+  "productName": "Strimer Plus Arduino Desktop",
   "description": "My Electron application description",
   "keywords": [],
   "main": "./main.js",
@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "serialport": "^10.3.0",
-    "tableify": "^1.1.1",
     "jquery": "*"
   },
   "devDependencies": {
