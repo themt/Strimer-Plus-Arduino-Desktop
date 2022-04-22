@@ -1,0 +1,12 @@
+Winde
+{
+    "path": "COM3",
+    "manufacturer": "wch.cn",
+    "serialNumber": "5&222bcdf1&0&9",
+    "pnpId": "USB\\VID_1A86&PID_7523\\5&222BCDF1&0&9",
+    "locationId": "Port_#0009.Hub_#0001",
+    "friendlyName": "USB-SERIAL CH340 (COM3)",
+    "vendorId": "1A86",
+    "productId": "7523"
+}
+macde

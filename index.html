@@ -14,8 +14,13 @@
         td {
             border: 1px solid black;
         }
+
         .uk-display-none {
             display: none;
+        }
+
+        li.uk-active {
+            background-color: 
         }
     </style>
     <link rel="stylesheet" href="uikit.min.css" />
@@ -33,83 +38,92 @@
         <p id="status">Connecting...</p>
     </div>
 
-    <div class="uk-form-stacked uk-display-none" action="#">
+    <ul id="tabs" class="uk-subnav uk-subnav-pill uk-flex-center" uk-switcher="animation: uk-animation-fade">
+        <li><a href="#">Connection</a></li>
+        <li><a href="#">Customize</a></li>
+    </ul>
 
-        <div class="uk-margin">
-            <label class="uk-form-label" for="form-stacked-text">Message</label>
-            <div class="uk-form-controls">
-                <div uk-grid>
-                    <div class="uk-width-expand">
-                        <input class="uk-input" id="message" type="text" placeholder="Some text...">
-                </div>
-                    <div class="uk-width-auto">
-                        <input class="uk-button uk-button-default" type="button" value="Change" onclick="serialWrite('-msg ' + document.getElementById('message').value)">
-                </div>
-                </div>
+    <ul class="uk-switcher uk-margin" style="height: calc(100vh - 200px)">
+        <li>
+            <div class="uk-position-center">
+                <p id="connectionStatus" class="uk-text-center"></p>
+                <ul id="portList" class="uk-list uk-list-divider uk-button-default" style="height: 100px; overflow-y: auto;">
+                </ul>
+                <input type="button" class="uk-button uk-button-default" value="Refresh" onclick="listPorts()">
+                <input type="button" class="uk-button uk-button-default" value="Disconnect" onclick="disconnectPort()">
+                <input id="connectButton" type="button" class="uk-button uk-button-primary" value="Connect" onclick="connectPort()">
+                
             </div>
+        </li>
+        <li>
+            <div class="uk-form-stacked" action="#">
+
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-stacked-text">Message</label>
+                    <div class="uk-form-controls">
+                        <div uk-grid>
+                            <div class="uk-width-expand">
+                                <input class="uk-input" id="message" type="text" placeholder="Some text...">
+                </div>
+                            <div class="uk-width-auto">
+                                <input class="uk-button uk-button-default" type="button" value="Change" onclick="serialWrite('-msg ' + document.getElementById('message').value)">
+                </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="uk-margin">
+                    <div uk-grid>
+                        <div class="uk-width-expand">
+                            <div class="uk-form-label">Delay</div>
+                            <div class="uk-form-controls">
+                                <input class="uk-range" type="range" value="2" min="0" max="255" step="1" onchange="serialWrite('-delay '+ this.value)">
+                    </div>
+                        </div>
+
+                        <div class="uk-width-expand">
+                            <div class="uk-form-label">Brightness</div>
+                            <div class="uk-form-controls">
+                                <input class="uk-range" type="range" value="2" min="0" max="255" step="1" onchange="serialWrite('-bri '+ this.value)">
+                    </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="uk-margin">
+                    <div uk-grid>
+                        <div class="uk-width-expand">
+                            <div class="uk-form-label">Color</div>
+                            <div class="uk-form-controls">
+                                <input class="uk-range color" type="color" onchange="serialWrite('-color '+ this.value.substring(1))">
+                </div>
+                        </div>
+                        <div class="uk-width-expand">
+                            <div class="uk-form-label">Background Color</div>
+                            <div class="uk-form-controls">
+                                <input class="uk-range color" type="color" onchange="serialWrite('-bgcolor '+ this.value.substring(1))">
+                    </div>
+                        </div>
+
+                        <div class="uk-width-expand">
+                            <div class="uk-form-label">Inverse</div>
+                            <div class="uk-form-controls">
+                                <label><input class="uk-radio" type="radio" name="inv" onchange="serialWrite('-inv 1')"> Yes</label><br>
+                                <label><input class="uk-radio" type="radio" name="inv" onchange="serialWrite('-inv 0')"> No</label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="uk-margin">
+                    <input class="uk-button uk-button-default" type="button" value="Reset" onclick="serialWrite('-reset 1')">
+                    <input class="uk-button uk-button-default" type="button" value="Save" onclick="serialWrite('-save 1')">
         </div>
-
-        <div class="uk-margin">
-            <div uk-grid>
-                <div class="uk-width-expand">
-                    <div class="uk-form-label">Delay</div>
-                    <div class="uk-form-controls">
-                        <input class="uk-range" type="range" value="2" min="0" max="255" step="1" onchange="serialWrite('-bri '+ this.value)">
-                    </div>
-                </div>
-
-                <div class="uk-width-expand">
-                    <div class="uk-form-label">Brightness</div>
-                    <div class="uk-form-controls">
-                        <input class="uk-range" type="range" value="2" min="0" max="255" step="1" onchange="serialWrite('-bri '+ this.value)">
-                    </div>
-                </div>
             </div>
-            
-        </div>
-
-        <div class="uk-margin">
-            <div uk-grid>
-                <div class="uk-width-expand">
-                    <div class="uk-form-label">Color</div>
-                    <div class="uk-form-controls">
-                        <input class="uk-range color" type="color" onchange="serialWrite('-color '+ this.value)">
-                </div>
-                </div>
-                <div class="uk-width-expand">
-                    <div class="uk-form-label">Background Color</div>
-                    <div class="uk-form-controls">
-                        <input class="uk-range color" type="color" onchange="serialWrite('-bgcolor '+ this.value)">
-                    </div>
-                </div>
-
-                <div class="uk-width-expand">
-                    <div class="uk-form-label">Inverse</div>
-                    <div class="uk-form-controls">
-                        <label><input class="uk-radio" type="radio" name="inv" onchange="serialWrite('-inv 1')"> Yes</label><br>
-                        <label><input class="uk-radio" type="radio" name="inv" onchange="serialWrite('-inv 0')"> No</label>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="uk-margin">
-            <input class="uk-button uk-button-default" type="button" value="Reset" onclick="serialWrite('-reset 1')">
-            <input class="uk-button uk-button-default" type="button" value="Save" onclick="serialWrite('-save 1')">
-        </div>
-    </div>
-
-    <ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade">
-    <li><a href="#">Connection</a></li>
-    <li><a href="#">Customize</a></li>
-</ul>
-
-<ul class="uk-switcher uk-margin" style="height: calc(100vh - 150px)">
-    <li>Hello!</li>
-    <li>Hello again!</li>
-    <li>Bazinga!</li>
-</ul>
+        </li>
+    </ul>
 
     <script>
         delete window.module;

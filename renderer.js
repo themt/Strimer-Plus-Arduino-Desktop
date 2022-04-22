@@ -4,73 +4,143 @@
 
 const { SerialPort } = require('serialport')
 const tableify = require('tableify')
+const jQuery = require('jquery')
 
-async function listSerialPorts() {
+function delay(delayInms) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(2);
+    }, delayInms);
+  });
+}
+
+var lastReaded = "";
+
+const connectionStatusDom = jQuery('#connectionStatus');
+const connectionButtonDom = jQuery('#connectButton');
+const portListDom = jQuery("#portList");
+
+async function listPorts() {
+
+  connectionStatusDom.html("Pick a com port and connect");
+  const listingListItem = jQuery('<li class="uk-text-center">Listing...</li>');
+
+  portListDom.html(listingListItem);
+
+  await delay(1000);
+
   await SerialPort.list().then((ports, err) => {
-    if(err) {
-      document.getElementById('error').textContent = err.message
+    if (err) {
+      portListDom.html('<li class="uk-text-center">' + err.message + '</li>');
       return
-    } else {
-      document.getElementById('error').textContent = ''
     }
-    console.log('ports', ports);
 
     if (ports.length === 0) {
-      document.getElementById('error').textContent = 'No ports discovered'
+      portListDom.html('<li class="uk-text-center">Not found</li>');
     }
 
-    tableHTML = tableify(ports)
-    document.getElementById('ports').innerHTML = tableHTML
+    portListDom.empty();
+
+    for (var i = 0; i < ports.length; i++) {
+      var node = jQuery('<li class="uk-text-center" style="cursor: pointer"><div first></div><div second class="uk-text-meta"></div></li>');
+      var r = ports[i];
+      node.click(() => setPort(node, r));
+      node.find('[first]').html(ports[i].path);
+      node.find('[second]').html(ports[i].friendlyName);
+      portListDom.append(node);
+    }
+
   })
 }
 
-function listPorts() {
-  listSerialPorts();
-  setTimeout(listPorts, 2000);
+function setPort(node, port) {
+  portListDom.find('li').removeClass('uk-text-primary');
+  node.addClass('uk-text-primary');
+  selectedPort = port;
 }
 
-// Set a timeout that will check for new serialPorts every 2 seconds.
-// This timeout reschedules itself.
-setTimeout(listPorts, 2000);
+listPorts()
 
-listSerialPorts()
+var selectedPort = null;
+var port;
+var deviceCheckOK = false;
 
-var portList = SerialPort.list();
+async function disconnectPort() {
+  if (port !== undefined && port.isOpen) {
+    deviceCheckOK = false;
+    port.close();
+    connectionStatusDom.html("Disconnected");
+  }
+}
 
-portList.then((r) => {
-console.log ("list 1", r);
-})
+async function connectPort() {
 
-console.log ("list", portList);
+  if (selectedPort !== null) {
 
-// Create a port
-const port = new SerialPort({
-  path: '/dev/tty.wchusbserial1450',
-  baudRate: 9600,
-  autoOpen: false,
-})
+    connectionStatusDom.html("Connecting...");
 
-port.open(function (err) {
-  if (err) {
-    document.getElementById("status").innerHTML = err.message;
-    return console.log('Error opening port: ', err.message)
+    if (port !== undefined && port.isOpen) {
+      deviceCheckOK = false;
+      port.close();
+      await delay(1000);
+    }
+
+    port = new SerialPort({
+      path: selectedPort.path,
+      baudRate: 9600,
+      autoOpen: false,
+      parser: new Readline("\r\n"),
+    });
+
+    port.open(function (err) {
+      if (err) {
+        connectionStatusDom.html("Connection fail");
+        document.getElementById("status").innerHTML = err.message;
+        return;
+      }
+
+      console.log(port);
+
+      connectionStatusDom.html("Checking device...");
+
+      port.on('data', data => {
+        if (deviceCheckOK == false) {
+          if (data.toString().indexOf("Strimer Plus Arduino") > -1) {
+            deviceCheckOK = true;
+            connectionStatusDom.html("Done");
+            UIkit.switcher(jQuery('#tabs').get(0)).show(1);
+          }
+        }
+
+        console.log ("read", data.toString());
+
+        lastReaded = data.toString();
+      });
+    });
+  }
+}
+
+
+async function serialWrite(line) {
+  if (port !== undefined && port.isOpen) {
+
+    lastReaded = "";
+
+    var result = await port.write(line + '\n');
+
+    await delay(1000);
+
+    if (!result) {
+      connectionStatusDom.html("Please make connect");
+      UIkit.switcher(jQuery('#tabs').get(0)).show(0);
+    } else if (lastReaded.indexOf("OK") == -1) {
+      connectionStatusDom.html("Device not found");
+      UIkit.switcher(jQuery('#tabs').get(0)).show(0);
+    }
   }
 
-  // Because there's no callback to write, write errors will be emitted on the port:
-  port.write('main screen turn on')
-})
-
-port.on('data', data =>{
-  console.log('got word from arduino:', data.toString());
-});
-
-port.write ('-color 00FF00\n');
-
-function serialWrite (line) {
-  console.log ("serialWrtite "+ line +"\n");
-  port.write(line + '\n');
+  else {
+    connectionStatusDom.html("Please make connect");
+    UIkit.switcher(jQuery('#tabs').get(0)).show(0);
+  }
 }
-
-//port.write('-color 00FF00')
-
-
