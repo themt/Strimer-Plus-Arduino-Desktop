@@ -1,0 +1,7 @@
+Strimer Plus Arduino Desktop License
+
+Copyright (c) 2022 Murat TAMCI
+
+You can using, modify and distribute of source code of Strimer Plus Arduino Desktop with including name of author (Murat TAMCI).
+
+Strimer Plus is product of Lian Li Industrial Co., LTD.

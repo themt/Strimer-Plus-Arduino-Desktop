@@ -5,10 +5,12 @@ const url = require('url')
 let mainWindow
 
 function createWindow() {
+
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
         backgroundColor: "#ccc",
+        icon: __dirname + '/icon.png',
         webPreferences: {
             nodeIntegration: true, // to allow require
             contextIsolation: false, // allow use with Electron 12+
@@ -42,4 +44,11 @@ app.on('activate', function () {
     if (mainWindow === null) {
         createWindow()
     }
+})
+
+app.whenReady().then(() => {
+  protocol.registerFileProtocol('atom', (request, callback) => {
+    const url = request.url.substr(7)
+    callback({ path: path.normalize(`${__dirname}/${url}`) })
+  })
 })

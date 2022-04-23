@@ -1,10 +1,11 @@
-// All of the Node.js APIs are available in the preload process.
-// It has the same sandbox as a Chrome extension.
+/*
+ * Strimer Plus Arduino Desktop
+ * Version: 2022.04.23
+ * Author: Murat TAMCI
+ * Web Site: www.themt.co
+ * License: Read LICENSE.txt
+ * Note: In loving memory of my grandfather (Ahmet Ozdil).
+ */
+
 window.addEventListener('DOMContentLoaded', () => {
-    /*for (const versionType of['chrome', 'electron', 'node']) {
-        document.getElementById(`${versionType}-version`).innerText = process.versions[versionType]
-    }*/
-
-    //document.getElementById('serialport-version').innerText = require('serialport/package').version
-
 })

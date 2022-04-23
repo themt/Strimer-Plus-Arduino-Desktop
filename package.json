@@ -1,52 +1,24 @@
 {
-  "name": "themt.strimer-plus-arduino-desktop",
+  "name": "Strimer Plus Arduino Desktop",
   "productName": "Strimer Plus Arduino Desktop",
+  "description": "My Electron application description",
+  "keywords": [],
+  "main": "./main.js",
   "version": "1.0.0",
-  "description": "Help you manage Strimer Plus Arduino",
-  "main": "main.js",
-  "postinstall": "electron-builder install-app-deps",
-  "build": {
-    "appId": "com.hypermodules.testapp",
-    "mac": {
-      "category": "public.app-category.utilities",
-      "target": [
-        "zip",
-        "dmg"
-      ]
-    },
-    "nsis": {
-      "perMachine": true
-    }
-  },
+  "author": "user",
   "scripts": {
-    "start": "electron .",
-    "test": "standard",
-    "postinstall": "install-app-deps",
-    "rebuild": "electron-rebuild",
-    "clean": "rimraf dist && mkdirp dist",
-    "build": "build --dir",
-    "dist": "build"
+    "start": "electron ."
   },
-  "repository": "https://github.com/themt/Strimer-Plus-Arduino-Desktop",
-  "keywords": [
-    "DIY",
-    "Arduino",
-    "Strimer Plus",
-    "Gamer",
-    "RGB"
-  ],
-  "author": "Murat TAMCI",
-  "license": "2022 (C) Murat TAMCI",
-  "devDependencies": {
-    "electron": "17.0.0",
+  "dependencies": {
+    "serialport": "^10.3.0",
+    "jquery": "*",
     "electron-builder": "^23.0.3",
     "mkdirp": "^0.5.1",
     "npm-run-all": "^4.0.2",
     "rimraf": "^2.6.1",
     "standard": "^11.0.0"
   },
-  "dependencies": {
-    "serialport": "^10.3.0",
-    "jquery": "*"
+  "devDependencies": {
+    "electron": "17.0.0"
   }
 }

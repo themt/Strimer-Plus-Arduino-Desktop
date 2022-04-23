@@ -1,41 +1,25 @@
-# electron-serialport
-An example of how to use serialport in an electron app
+<img src="icon.png" width="150">
 
-**Clone and run for a quick way to see Electron and Serialport in action.**
+# Strimer Plus Arduino Desktop
 
-This is a minimal Electron application based on the [Quick Start Guide](http://electron.atom.io/docs/tutorial/quick-start) within the Electron documentation.
+It's a GUI tool to using on desktop device like Windows or MacOS X. Help you to manage for [Strimer Plus Arduino](https://github.com/themt/Strimer_Plus_Arduino) You can change scrolling text message, color or whatever with this tool. It can run Windows and MacOS X.
 
-**Use this app along with the [Electron API Demos](http://electron.atom.io/#get-started) app for API code examples to help you get started.**
+<img src="screen_connect.png" width="400"> <img src="screen_customize.png" width="400">
 
-A basic Electron application needs just these files:
+## Electron JS Based
 
-- `package.json` - Points to the app's main file and lists its details and dependencies.
-- `main.js` - Starts the app and creates a browser window to render HTML. This is the app's **main process**.
-- `index.html` - A web page to render. This is the app's **renderer process**.
+I develop this GUI tool with [ElectronJS](https://www.electronjs.org) and it's open source.
 
-You can learn more about each of these components within the [Quick Start Guide](http://electron.atom.io/docs/tutorial/quick-start).
+## What Is Strimer Plus
 
-## To Use
+[Strimer Plus](https://lian-li.com/product/strimer-2-24pin/) is a product for PC cases for gaming pc.
 
-To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+> Addressable RGB extension cables. Multi-connector support MB 24PIN, GPU 8 PIN. Unparalleled RGB effects. Brighter and more complex light effects, premium build quality with a clean look, vibrant and smooth lighting quality. Work better, last longer.
 
-```bash
-# Clone this repository
-git clone https://github.com/serialport/electron-serialport.git
-# Go into the repository
-cd electron-serialport
-# Install dependencies
-npm install
-# Run the app
-npm start
-```
+## Why Strimer Plus Arduino
 
-Learn more about Electron and its API in the [documentation](http://electron.atom.io/docs/).
+Because original product not customizable and it's not cool enought. Strimer Plus Arduino can you show scrolling text, color, speed and backgroud color are changable.
 
-## Other Example Apps
+## License
 
-For more example apps, see the
-[list of boilerplates](http://electron.atom.io/community/#boilerplates)
-created by the awesome electron community.
-
-#### License [CC0 1.0 (Public Domain)](LICENSE.md)
+About License you can look up LICENSE.txt
