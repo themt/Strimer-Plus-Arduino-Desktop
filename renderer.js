@@ -138,6 +138,8 @@ async function connectPort() {
 
         var readline = data.toString();
 
+        console.log ("readed: ", readline);
+
         if (deviceCheckOK == false) {
           if (readline.indexOf("Strimer Plus Arduino") > -1) {
             deviceCheckOK = true;
@@ -199,6 +201,8 @@ async function serialWrite(line, checkOK = true) {
     if (port !== undefined && port.isOpen) {
 
       lastReaded = "";
+
+      console.log ("write: ", lastLine);
 
       var result = await port.write(lastLine + '\n');
 
