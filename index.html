@@ -72,7 +72,7 @@
                                 <input class="uk-input" id="msg" type="text" placeholder="Some text...">
                 </div>
                             <div class="uk-width-auto">
-                                <input class="uk-button uk-button-default" type="button" value="Change" onclick="serialWrite('-msg ' + document.getElementById('msg').value.replace('-', '\\-'))" pattern="a">
+                                <input class="uk-button uk-button-default" type="button" value="Change" onclick="serialWrite('-msg ' + document.getElementById('msg').value.replaceAll('-', '\\-'))" pattern="a">
                 </div>
                         </div>
                     </div>
